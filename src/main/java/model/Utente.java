@@ -1,29 +1,22 @@
 package model;
+import java.util.ArrayList;
+import java.util.List;
 
-/**
- * The type Utente.
- */
 public class Utente {
-    private final String login;
+    private String username;
     private String password;
+    private List<Bacheca> bacheche;
+    private List<ToDo> todos;
 
-    /**
-     * Instantiates a new Utente.
-     *
-     * @param login    the login
-     * @param password the password
-     */
-    public Utente(String login, String password) {
-        this.login = login;
+    // Costruttore
+    public Utente(String username, String password) {
+        this.username = username;
         this.password = password;
+        this.bacheche = new ArrayList<>();
+        this.todos = new ArrayList<>();
     }
 
-    /**
-     * Gets login.
-     *
-     * @return the login
-     */
-    public String getLogin() {
-        return login;
+    public String getUsername() {
+        return username;
     }
 }
