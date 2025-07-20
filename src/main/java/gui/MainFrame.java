@@ -1,4 +1,3 @@
-// MainFrame.java
 package gui;
 
 import controller.Controller;
@@ -6,15 +5,18 @@ import model.*;
 
 import javax.swing.*;
 import java.awt.*;
+/** * Classe principale che rappresenta la finestra principale dell'applicazione.
+ * Gestisce il layout a schede per le diverse viste (login, dashboard, registrazione).
+ */
 
 public class MainFrame extends JFrame {
     private CardLayout cardLayout;
     private JPanel cardPanel;
     private LoginPanel loginPanel;
     private DashboardPanel dashboardPanel;
-    private RegistrationPanel registrationPanel; // New: RegistrationPanel
+    private RegistrationPanel registrationPanel;
     private Utente utenteLoggato;
-    private model.UtenteManager utenteManager;
+    private UtenteManager utenteManager;
     private JPanel bottomPanelLogin;
     private JPanel bottomPanelDashboard;
     private JButton logoutButton;
@@ -22,6 +24,13 @@ public class MainFrame extends JFrame {
 
     private final Controller controller;
 
+    /**
+     * Costruttore della classe MainFrame.
+     * Inizializza la finestra principale, i pannelli di login, dashboard e registrazione,
+     * e i pulsanti di logout ed exit.
+     * @param controller Controller per gestire le operazioni dell'applicazione.
+     * @param utenteManager Gestore degli utenti per le operazioni di login e registrazione.
+     */
     public MainFrame(Controller controller, UtenteManager utenteManager) {
         this.utenteManager = utenteManager;
         setTitle("Gestore ToDo");
@@ -51,9 +60,6 @@ public class MainFrame extends JFrame {
         logoutButton.setPreferredSize(new Dimension(150, 40));
         logoutButton.setFont(new Font("Arial", Font.BOLD, 16));
         logoutButton.addActionListener(e -> {
-            if (utenteLoggato != null) {
-                controller.getBoardController().salvaBacheche(utenteLoggato.getUsername());
-            }
             setUtenteLoggato(null);
             showLogin();
         });
@@ -71,6 +77,12 @@ public class MainFrame extends JFrame {
         setVisible(true);
     }
 
+    /**
+     * Mostra il pannello di login.
+     * Rimuove il pannello della dashboard se presente e aggiunge il pannello di login.
+     * Imposta il layout a schede per visualizzare il pannello di login.
+     * * Rende visibile il campo di input per il nome utente e lo mette a fuoco.
+     */
     public void showLogin() {
         remove(bottomPanelDashboard);
         add(bottomPanelLogin, BorderLayout.SOUTH);
@@ -80,6 +92,12 @@ public class MainFrame extends JFrame {
         repaint();
     }
 
+    /**
+     * Mostra il pannello della dashboard.
+     * Rimuove il pannello di login se presente e aggiunge il pannello della dashboard.
+     * Crea un nuovo pannello DashboardPanel e lo aggiunge al layout a schede.
+     * Rende visibile il pannello della dashboard e lo mette in primo piano.
+     */
     public void showDashboard() {
         remove(bottomPanelLogin);
         add(bottomPanelDashboard, BorderLayout.SOUTH);
@@ -93,6 +111,12 @@ public class MainFrame extends JFrame {
         repaint();
     }
 
+    /**
+     * Mostra il pannello di registrazione.
+     * Rimuove il pannello della dashboard se presente e aggiunge il pannello di login.
+     * Imposta il layout a schede per visualizzare il pannello di registrazione.
+     * Pulisce i campi del pannello di registrazione e mette a fuoco il campo nome utente.
+     */
     public void showRegistration() {
         remove(bottomPanelDashboard);
         add(bottomPanelLogin, BorderLayout.SOUTH);
@@ -103,19 +127,37 @@ public class MainFrame extends JFrame {
         repaint();
     }
 
+    /**
+     * Imposta l'utente attualmente loggato.
+     * Aggiorna il controller con l'utente loggato.
+     * @param utente L'utente da impostare come loggato.
+     */
     public void setUtenteLoggato(Utente utente) {
         this.utenteLoggato = utente;
+        controller.setUtenteLoggato(utente); // Set in controller as well
     }
 
+    /**
+     * Ottiene l'utente attualmente loggato.
+     * @return L'utente loggato, o null se nessun utente è loggato.
+     */
     public Utente getUtenteLoggato() {
         return utenteLoggato;
     }
 
+    /**
+     * Ottiene il controller associato a questa finestra principale.
+     * @return Il controller dell'applicazione.
+     */
     public Controller getController() {
         return controller;
     }
 
-    public model.UtenteManager getUtenteManager() {
+    /** * Ottiene il gestore degli utenti associato a questa finestra principale.
+     * Questo gestore è utilizzato per le operazioni di login e registrazione degli utenti.
+     * @return Il gestore degli utenti (UtenteManager) associato a questa finestra principale.
+     */
+    public UtenteManager getUtenteManager() {
         return utenteManager;
     }
 }
