@@ -511,7 +511,7 @@ public class BoardPanel extends JPanel {
     }
 
     /**
-     * Crea un bottone per modificare il dialogo dei dettagli del ToDo.
+     * Ccrea un bottone per modificare il dialogo dei dettagli del ToDo.
      * Quando cliccato, mostra un dialogo con le informazioni dettagliate del ToDo,
      * inclusi titolo, colore di sfondo, descrizione, URL e immagine.
      * @param todo Il ToDo per cui creare il bottone.
@@ -808,6 +808,59 @@ public class BoardPanel extends JPanel {
         detailsButton.addActionListener(e -> showTodoDetails(todo));
         return detailsButton;
     }
+// in src/gui/BoardPanel.java
+
+    /**
+     * Aggiunge una riga di dettaglio per la descrizione, usando una JTextArea
+     * dentro uno JScrollPane per gestire correttamente il testo su più righe,
+     * il word-wrap e lo scrolling.
+     * @param panel Il pannello a cui aggiungere la riga.
+     * @param gbc Le constraint di layout.
+     * @param label L'etichetta della riga (es. "Descrizione:").
+     * @param value Il testo della descrizione da visualizzare.
+     */
+    private void addDescriptionDetailRow(JPanel panel, GridBagConstraints gbc, String label, String value) {
+        // 1. Aggiunge l'etichetta "Descrizione:"
+        gbc.gridx = 0;
+        gbc.gridwidth = 1;
+        gbc.weightx = 0; // L'etichetta non si espande
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.NORTHWEST; // Allinea l'etichetta in alto a sinistra
+        panel.add(new JLabel(label), gbc);
+
+        // 2. Crea e configura la JTextArea per il testo multi-riga
+        JTextArea descriptionArea = new JTextArea(value != null && !value.isEmpty() ? value : "N.D.");
+        descriptionArea.setEditable(false);
+        descriptionArea.setLineWrap(true);          // Va a capo automaticamente
+        descriptionArea.setWrapStyleWord(true);     // Evita di spezzare le parole
+        descriptionArea.setBackground(panel.getBackground()); // Sfondo uguale al pannello
+        descriptionArea.setFont(new JLabel().getFont());
+        descriptionArea.setFocusable(false);
+
+        // 3. Inserisce la JTextArea in uno JScrollPane. Questo è il passaggio FONDAMENTALE.
+        JScrollPane scrollPane = new JScrollPane(descriptionArea);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder()); // Rimuove il bordo per un look pulito
+        // Imposta una dimensione preferita per dare una forma al dialogo
+        scrollPane.setPreferredSize(new Dimension(350, 80));
+
+        // 4. Aggiunge lo JScrollPane (che contiene la JTextArea) al pannello
+        gbc.gridx = 1;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.fill = GridBagConstraints.BOTH;   // Permette al componente di espandersi in entrambe le direzioni
+        gbc.weightx = 1.0;                    // Occupa tutto lo spazio orizzontale disponibile
+        gbc.weighty = 1.0;                    // Occupa tutto lo spazio verticale disponibile
+        panel.add(scrollPane, gbc);
+
+        // 5. Resetta i constraint per le righe successive
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0;
+        gbc.weighty = 0;
+        gbc.gridy++;
+    }
+
+
+
 
     /**
      * Metodo per visualizzare i dettagli di un ToDo.
@@ -820,14 +873,14 @@ public class BoardPanel extends JPanel {
     private void showTodoDetails(ToDo todo) {
         final JPanel detailsPanel = new JPanel();
         detailsPanel.setLayout(new GridBagLayout());
-        detailsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        detailsPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.anchor = GridBagConstraints.WEST;
         gbc.insets = new Insets(2, 2, 2, 2);
 
         addDetailRow(detailsPanel, gbc, "Titolo:", todo.getTitolo());
-        addDetailRow(detailsPanel, gbc, "Descrizione:", todo.getDescrizione());
+        addDescriptionDetailRow(detailsPanel, gbc, "Descrizione:", todo.getDescrizione());
         addDateDetailRow(detailsPanel, gbc, todo);
         addColorDetailRow(detailsPanel, gbc, todo);
         addPositionDetailRow(detailsPanel, gbc, todo);
@@ -1188,7 +1241,7 @@ public class BoardPanel extends JPanel {
         button.setBorder(createButtonBorder());
         addHoverEffect(button, BUTTON_GENERAL_BG, BUTTON_GENERAL_HOVER);
     }
-/*
+/**
         * Crea un bordo personalizzato per i bottoni.
         * Utilizza un bordo vuoto con margini e un bordo di linea con colore grigio chiaro.
         * Questo bordo viene utilizzato per i bottoni all'interno del pannello dei bottoni.
